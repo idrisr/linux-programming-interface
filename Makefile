@@ -8,14 +8,15 @@ DIRS =	lib \
 	acl altio \
 	cap cgroups \
 	daemons dirs_links \
-	filebuff fileio filelock files filesys getopt \
+	filebuff  filelock files filesys getopt \
+	03progconc \
+	04-05fileio \
 	inotify \
 	loginacct \
 	memalloc \
 	mmap \
 	pgsjc pipes pmsg \
 	proc proccred procexec procpri procres \
-	progconc \
 	psem pshm pty \
 	shlibs \
 	signals sockets \
