@@ -7,8 +7,11 @@
 DIRS =	lib \
 	acl altio \
 	cap cgroups \
-	daemons dirs_links \
-	filebuff  filelock files filesys getopt \
+	daemons \
+	18dirs_links \
+	filebuff  filelock files \
+	14filesys \
+	getopt \
 	03progconc \
 	04-05fileio \
 	inotify \
