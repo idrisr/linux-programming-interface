@@ -16,4 +16,10 @@ clean :
 showall :
 	@ echo ${EXE}
 
+glibc-version:
+
+syserror:
+
+print-%: ; @echo $* = $($*)
+
 ${EXE} : ${TLPI_LIB}		# True as a rough approximation
