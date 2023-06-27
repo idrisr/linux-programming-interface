@@ -5,18 +5,15 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-
+      src = pkgs.fetchurl {
+        url = "https://man7.org/tlpi/code/download/tlpi-230522-dist.tar.gz";
+        hash = "sha256-8cHXacHsxjo69fvVQicGd5L+HtTXIoZMIGFYJ3bFLZs=";
+      };
       libtlpi = with pkgs;
         stdenv.mkDerivation {
+          inherit src;
           name = "libtlpi";
-          src = fetchurl {
-            url = "https://man7.org/tlpi/code/download/tlpi-230522-dist.tar.gz";
-            hash = "sha256-8cHXacHsxjo69fvVQicGd5L+HtTXIoZMIGFYJ3bFLZs=";
-          };
           buildInputs = [ libcap ];
-          preInstall = ''
-            mkdir -p $out/lib
-          '';
           buildPhase = ''
             pushd lib
             make
@@ -31,11 +28,8 @@
 
       ch41 = with pkgs;
         stdenv.mkDerivation {
-          name = "libtlpi";
-          src = fetchurl {
-            url = "https://man7.org/tlpi/code/download/tlpi-230522-dist.tar.gz";
-            hash = "sha256-8cHXacHsxjo69fvVQicGd5L+HtTXIoZMIGFYJ3bFLZs=";
-          };
+          inherit src;
+          name = "dynload";
           nativeBuildInputs = [ libtlpi ];
           postPatch = ''
             sed -i '/''${EXE} : ''${TLPI_LIB}/d' shlibs/Makefile
@@ -46,29 +40,23 @@
             'TLPI_INCL_DIR = ''${TLPI_DIR}/lib' \
             'TLPI_INCL_DIR = ${libtlpi}/share'
           '';
-          LIBRARY_PATH = lib.makeLibraryPath [ libtlpi ];
-          makeFlags = [ "-l${libtlpi}/lib" ''LIBRARY_PATH="${libtlpi}/lib'' ];
           buildPhase = ''
             pushd shlibs
             make
           '';
-
           installPhase = ''
             mkdir -p $out/bin
             cp dynload  $out/bin
           '';
         };
-
     in {
-      packages.${system} = { inherit libtlpi ch41; };
-
       apps.${system} = {
         runch41 = {
           type = "app";
           program = "${ch41}/bin/dynload";
         };
       };
-
       devShells.${system} = { inherit libtlpi; };
+      packages.${system} = { inherit libtlpi ch41; };
     };
 }
